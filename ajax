@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<head>
+<title>
+Weather Report
+</title>
+<link rel="stylesheet" type="text/css" href="ajaxstyle.css">
+</head>
+<body>
+<h1 id="city"></h1>
+<div id="all">
+<div id="moon">
+  <div id="crater"></div>
+  <div id="star1"></div>
+  <div id="star2"></div>
+  <div id="star3"></div>
+  <div id="star4"></div>
+  <div id="star5"></div>
+</div>
+<div id="sun">
+  <div id="ray">
+    <div id="ray1">
+      <div id="ray2">
+        <div id="ray3">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        <div id="cloud">
+          <div id="cloud1">
+            <div id="cloud2">
+              <div id="rain">
+                <div id="rain1">
+                  <div id="bolts">
+                  <div id="bolt">
+                    <div id="bolt1">
+                      <div id="bolt2">
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+</div>
+<div id="w"></div>
+  <p id='t'></p>
+    <p id='hU'></p>
+      <p id='til'></p>
+</body>
+<script>
+function ajaxCall(){
+  var loc=prompt("Name your city");
+  var weather = new XMLHttpRequest();
+      weather.open("GET","http://api.openweathermap.org/data/2.5/weather?q=" + loc + "&appid=002c514b7cc57302b542830301bf1422",false);
+      weather.send(null);
+  var r=JSON.parse(weather.response);
+  var des= r.weather[0].description;
+  var tC=(Math.floor(r.main.temp-273.15))+ "\u00B0" + "C";
+  var tF=(Math.floor((r.main.temp * (9/5))- 459.67))+ "\u00B0" + "F";
+  var hU=r.main.humidity;
+  var city=r.name;
+  var sRise=r.sys.sunrise;
+  var sSet=r.sys.sunset;
+  var dT=r.dt;
+  var diff=dT-sRise;
+  var temp=document.getElementById("t");
+          temp.innerHTML=tF;
+          temp.addEventListener("click",function(){
+          if(temp.innerHTML=tF){return temp.innerHTML=tC;};
+          });
+          temp.addEventListener("mousedown",function(){
+            if(temp.innerHTML=tC){return temp.innerHTML=tF;};
+          });
+  document.getElementById("w").innerHTML=des;
+  document.getElementById("hU").innerHTML="Humidity: " + hU +"%";
+  document.getElementById("city").innerHTML=city;
+
+function check(){
+  if(diff<=0){
+  moon.style.visibility="visible";
+  sun.style.visibility="hidden";
+  cloud.style.visibility="hidden";
+  rain.style.visibility="hidden";
+  bolt.style.visibility="hidden";
+  };
+  if(diff>0){
+  document.body.style.background="#249";
+  moon.style.visibility="hidden";
+  sun.style.visibility="visible";
+  cloud.style.visibility="hidden";
+  rain.style.visibility="hidden";
+  bolt.style.visibility="hidden";
+  }
+  if(des=="broken clouds"||des=="scattered clouds"||des=="overcast clouds"||des=="few clouds"){
+    cloud.style.visibility="visible";
+    cloud.style.margin="3%";
+  }
+  if(des=="light rain"||des=="mist"||des=="rain"||des=="light intensity drizzle"||des=="heavy intensity rain"||des=="moderate rain"){
+  sun.style.visibility="hidden";
+  cloud.style.visibility="visible";
+  rain.style.visibility="visible";
+  }
+  if(des=="thunderstorm"){
+    sun.style.visibility="hidden";
+    cloud.style.visibility="visible";
+    rain.style.visibility="visible";
+    bolt.style.visibility="visible";
+  }
+}
+check();
+}
+//closure of ajaxCall();
+ajaxCall();
+</script>
